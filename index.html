@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>心动私人影院</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            background-color: #0f0f1a;
+            color: #fff;
+            min-height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        /* 首页样式 */
+        .home-screen {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 50%, #16213e 100%);
+            position: relative;
+            overflow: hidden;
+            transition: opacity 0.8s ease;
+        }
+        
+        .home-screen.active {
+            opacity: 1;
+        }
+        
+        .home-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        /* 星空背景 */
+        .stars {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+        
+        .star {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+        
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+        
+        /* 标题样式 */
+        .title-container {
+            text-align: center;
+            z-index: 1;
+            max-width: 800px;
+            padding: 0 20px;
+        }
+        
+        .main-title {
+            font-size: 4.5rem;
+            font-weight: 800;
+            background: linear-gradient(90deg, #ff6b9d, #ff8fab, #c77dff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 10px;
+            letter-spacing: 3px;
+            text-shadow: 0 5px 15px rgba(199, 125, 255, 0.3);
+        }
+        
+        .subtitle {
+            font-size: 1.4rem;
+            color: #a5a6c4;
+            margin-bottom: 50px;
+            letter-spacing: 1px;
+        }
+        
+        /* 开启按钮样式 */
+        .start-btn {
+            background: linear-gradient(135deg, #ff6b9d 0%, #c77dff 100%);
+            color: white;
+            border: none;
+            padding: 18px 45px;
+            font-size: 1.4rem;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            letter-spacing: 2px;
+            box-shadow: 0 10px 25px rgba(199, 125, 255, 0.4);
+            transition: all 0.3s ease;
+            z-index: 1;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .start-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(199, 125, 255, 0.6);
+        }
+        
+        .start-btn:active {
+            transform: translateY(0);
+        }
+        
+        .start-btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transform: translateX(-100%);
+        }
+        
+        .start-btn:hover::after {
+            animation: shine 1.5s ease infinite;
+        }
+        
+        @keyframes shine {
+            100% { transform: translateX(100%); }
+        }
+        
+        /* 介绍页面样式 */
+        .info-screen {
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(135deg, #0c0c14 0%, #151528 50%, #1c1c38 100%);
+            position: absolute;
+            top: 0;
+            left: 0;
+            padding: 40px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.8s ease;
+            overflow-y: auto;
+        }
+        
+        .info-screen.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+        
+        /* 返回按钮样式 */
+        .back-btn {
+            position: fixed;
+            top: 30px;
+            left: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.3rem;
+            z-index: 10;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+        
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+        
+        /* 介绍内容样式 */
+        .info-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 60px 20px 40px;
+        }
+        
+        .info-title {
+            font-size: 2.8rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, #ff8fab, #c77dff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .info-text {
+            font-size: 1.15rem;
+            line-height: 1.8;
+            color: #d1d1e9;
+            text-align: justify;
+            margin-bottom: 25px;
+        }
+        
+        .highlight {
+            color: #ff8fab;
+            font-weight: 600;
+        }
+        
+        .features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin: 40px 0;
+        }
+        
+        .feature {
+            flex: 1;
+            min-width: 200px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 25px;
+            border-radius: 15px;
+            border-left: 4px solid #ff8fab;
+        }
+        
+        .feature h3 {
+            color: #ff8fab;
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+        
+        .feature p {
+            color: #b8b8d1;
+            line-height: 1.6;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .main-title {
+                font-size: 3rem;
+            }
+            
+            .subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .info-content {
+                padding: 40px 10px 20px;
+            }
+            
+            .info-title {
+                font-size: 2.2rem;
+            }
+            
+            .info-text {
+                font-size: 1rem;
+            }
+            
+            .back-btn {
+                top: 20px;
+                left: 20px;
+                width: 45px;
+                height: 45px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 首页 -->
+    <div class="home-screen active" id="homeScreen">
+        <div class="stars" id="stars"></div>
+        
+        <div class="title-container">
+            <h1 class="main-title">心动私人影院</h1>
+            <p class="subtitle">沉浸式观影体验，专属于你的电影时光</p>
+            <button class="start-btn" id="startBtn">
+                <i class="fas fa-play-circle"></i> 开启
+            </button>
+        </div>
+    </div>
+    
+    <!-- 介绍页面 -->
+    <div class="info-screen" id="infoScreen">
+        <button class="back-btn" id="backBtn">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        
+        <div class="info-content">
+            <h2 class="info-title">心动私人影院介绍</h2>
+            
+            <p class="info-text">欢迎来到<span class="highlight">心动私人影院</span>，这是一个专为电影爱好者打造的全新观影体验空间。我们致力于提供最优质、最私密的观影环境，让每一位观众都能在这里找到属于自己的电影世界。</p>
+            
+            <p class="info-text">与传统影院不同，心动私人影院采用<span class="highlight">独立包间设计</span>，每个包间都配备了顶级音响系统、4K超高清投影设备和专业级隔音材料。您可以在这里与家人、朋友或伴侣享受完全不受打扰的电影时光，自由选择喜爱的影片，调整观影环境，创造独一无二的观影记忆。</p>
+            
+            <p class="info-text">我们的影片库<span class="highlight">超过5000部作品</span>，涵盖经典老片、热门新片、独立制作、国际电影节获奖作品等多种类型。每月更新上百部影片，确保您总能找到想看的电影。此外，我们还提供丰富的纪录片、动画片和剧集，满足不同观众的喜好。</p>
+            
+            <div class="features">
+                <div class="feature">
+                    <h3><i class="fas fa-couch"></i> 舒适环境</h3>
+                    <p>每个包间配备专业级沙发座椅，可调节角度，提供毛毯和抱枕，确保长时间观影的舒适体验。</p>
+                </div>
+                <div class="feature">
+                    <h3><i class="fas fa-film"></i> 丰富片源</h3>
+                    <p>拥有海量正版片源库，覆盖各种类型和年代，从经典到最新上映，满足不同观影需求。</p>
+                </div>
+                <div class="feature">
+                    <h3><i class="fas fa-utensils"></i> 美食服务</h3>
+                    <p>提供精心准备的观影小食和饮品，支持扫码点餐，服务员将安静地送至您的包间。</p>
+                </div>
+            </div>
+            
+            <p class="info-text"><span class="highlight">个性化定制</span>是心动私人影院的一大特色。您可以选择不同的主题包间：浪漫星空、复古经典、科幻未来、自然森林等，每种主题都有相应的装饰、灯光和音效氛围。在特殊日期，我们还可以根据您的需求布置包间，创造难忘的纪念日体验。</p>
+            
+            <p class="info-text">我们的<span class="highlight">预约系统</span>非常灵活，支持在线选片、选时、选包间，还可以提前预订特色小食和饮品。会员享有更多特权，包括积分兑换、生日专属礼包、新片优先观影权等。</p>
+            
+            <p class="info-text">心动私人影院不仅是一个观影场所，更是一个<span class="highlight">社交空间</span>。我们定期举办电影主题沙龙、导演分享会、影迷交流会等活动，让热爱电影的人们在这里相聚、交流、分享。</p>
+            
+            <p class="info-text">在卫生安全方面，我们坚持<span class="highlight">最高标准</span>。每个包间在使用后都会进行彻底清洁消毒，沙发、地毯等定期深度清洁，确保为每一位顾客提供安全、卫生的观影环境。</p>
+            
+            <p class="info-text">无论您是想要一个浪漫的约会之夜、一个放松的周末下午，还是与朋友的小型聚会，心动私人影院都能为您提供完美的解决方案。我们相信，电影不仅是娱乐，更是一种生活方式，一种情感连接的方式。</p>
+            
+            <p class="info-text">现在就来体验心动私人影院吧！点击左上角返回按钮回到主页面，点击"开启"按钮，开始您的专属电影之旅。</p>
+        </div>
+    </div>
+
+    <script>
+        // 获取DOM元素
+        const homeScreen = document.getElementById('homeScreen');
+        const infoScreen = document.getElementById('infoScreen');
+        const startBtn = document.getElementById('startBtn');
+        const backBtn = document.getElementById('backBtn');
+        const starsContainer = document.getElementById('stars');
+        
+        // 创建星空背景
+        function createStars() {
+            const starsCount = 150;
+            
+            for (let i = 0; i < starsCount; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star');
+                
+                // 随机大小和位置
+                const size = Math.random() * 3 + 1;
+                const posX = Math.random() * 100;
+                const posY = Math.random() * 100;
+                const delay = Math.random() * 5;
+                
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                star.style.left = `${posX}%`;
+                star.style.top = `${posY}%`;
+                star.style.animationDelay = `${delay}s`;
+                
+                starsContainer.appendChild(star);
+            }
+        }
+        
+        // 切换到介绍页面
+        startBtn.addEventListener('click', () => {
+            homeScreen.classList.remove('active');
+            homeScreen.classList.add('hidden');
+            
+            // 短暂延迟后显示介绍页面
+            setTimeout(() => {
+                infoScreen.classList.add('active');
+            }, 300);
+        });
+        
+        // 返回首页
+        backBtn.addEventListener('click', () => {
+            infoScreen.classList.remove('active');
+            
+            // 短暂延迟后显示首页
+            setTimeout(() => {
+                homeScreen.classList.remove('hidden');
+                homeScreen.classList.add('active');
+            }, 300);
+        });
+        
+        // 初始化星空背景
+        createStars();
+    </script>
+</body>
+</html>
